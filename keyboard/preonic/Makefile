@@ -27,7 +27,7 @@
 # make flip-ee = Download the eeprom file to the device, using Atmel FLIP
 #                (must have Atmel FLIP installed).
 #
-# make debug = Start either simulavr or avarice as specified for debugging, 
+# make debug = Start either simulavr or avarice as specified for debugging,
 #              with avr-gdb or avr-insight as the front end for debugging.
 #
 # make filename.s = Just compile filename.c into the assembler code only.
@@ -37,29 +37,6 @@
 #
 # To rebuild project do "make clean" then "make all".
 #----------------------------------------------------------------------------
-
-# Target file name (without extension).
-TARGET = preonic_lufa
-
-# Directory common source filess exist
-TOP_DIR = ../..
-
-# Directory keyboard dependent files exist
-TARGET_DIR = .
-
-# # project specific files
-SRC = extended_keymap_common.c \
-	matrix.c \
-	led.c \
-	backlight.c
-
-ifdef KEYMAP
-    SRC := extended_keymaps/extended_keymap_$(KEYMAP).c $(SRC)
-else
-    SRC := extended_keymaps/extended_keymap_default.c $(SRC)
-endif
-
-CONFIG_H = config.h
 
 # MCU name
 #MCU = at90usb1287
@@ -77,7 +54,6 @@ MCU = atmega32u4
 #     reflect the processor speed set externally so that the code can use accurate
 #     software delays.
 F_CPU = 16000000
-
 
 #
 # LUFA specific
@@ -110,34 +86,26 @@ OPT_DEFS += -DINTERRUPT_CONTROL_ENDPOINT
 #   USBaspLoader     2048
 OPT_DEFS += -DBOOTLOADER_SIZE=4096
 
-
 # Build Options
-#   comment out to disable the options.
+#   change to "no" to disable the options, or define them in the makefile.mk in 
+#   the appropriate keymap folder that will get included automatically
 #
-BOOTMAGIC_ENABLE = yes	# Virtual DIP switch configuration(+1000)
-MOUSEKEY_ENABLE = yes	# Mouse keys(+4700)
-EXTRAKEY_ENABLE = yes	# Audio control and System control(+450)
-CONSOLE_ENABLE = yes	# Console for debug(+400)
-COMMAND_ENABLE = yes    # Commands for debug and configuration
+BOOTMAGIC_ENABLE ?= no       # Virtual DIP switch configuration(+1000)
+MOUSEKEY_ENABLE ?= yes       # Mouse keys(+4700)
+EXTRAKEY_ENABLE ?= yes       # Audio control and System control(+450)
+CONSOLE_ENABLE ?= no         # Console for debug(+400)
+COMMAND_ENABLE ?= yes        # Commands for debug and configuration
+NKRO_ENABLE ?= no            # Nkey Rollover - if this doesn't work, see here: https://github.com/tmk/tmk_keyboard/wiki/FAQ#nkro-doesnt-work
+BACKLIGHT_ENABLE ?= yes      # Enable keyboard backlight functionality
+MIDI_ENABLE ?= no            # MIDI controls
+AUDIO_ENABLE ?= no           # Audio output on port C6
+UNICODE_ENABLE ?= no         # Unicode
+BLUETOOTH_ENABLE ?= no       # Enable Bluetooth with the Adafruit EZ-Key HID
+RGBLIGHT_ENABLE ?= no        # Enable WS2812 RGB underlight.  Do not enable this with audio at the same time.
+
 # Do not enable SLEEP_LED_ENABLE. it uses the same timer as BACKLIGHT_ENABLE
-#SLEEP_LED_ENABLE = yes  # Breathing sleep LED during USB suspend
-NKRO_ENABLE = yes		# USB Nkey Rollover - not yet supported in LUFA
-BACKLIGHT_ENABLE = yes  # Enable keyboard backlight functionality
-MIDI_ENABLE = yes 		# MIDI controls
-BACKLIGHT_ENABLE = yes
+SLEEP_LED_ENABLE ?= no    # Breathing sleep LED during USB suspend
 
-ifdef MIDI_ENABLE
-	SRC += keymap_midi.c \
-		   beeps.c
+ifndef QUANTUM_DIR
+	include ../../Makefile
 endif
-
-# Optimize size but this may cause error "relocation truncated to fit"
-#EXTRALDFLAGS = -Wl,--relax
-
-# Search Path
-VPATH += $(TARGET_DIR)
-VPATH += $(TOP_DIR)
-
-include $(TOP_DIR)/protocol/lufa.mk
-include $(TOP_DIR)/common.mk
-include $(TOP_DIR)/rules.mk

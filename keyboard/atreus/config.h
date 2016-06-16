@@ -33,11 +33,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MATRIX_ROWS 4
 #define MATRIX_COLS 11
 
-// Planck PCB default pin-out
 // Change this to how you wired your keyboard
 // COLS: Left to right, ROWS: Top to bottom
-#define COLS (int []){ F6, F5, F4, B7, B6, B5, B4, B3, B2, B1, B0}
-#define ROWS (int []){ D0, D1, D2, D3 }
+#if defined(ATREUS_ASTAR)
+#   define MATRIX_ROW_PINS { D0, D1, D3, D2 }
+#   define MATRIX_COL_PINS { D7, C6, B5, B4, E6, D4, B6, F6, F7, D6, B7 }
+#   define UNUSED_PINS
+#elif defined(ATREUS_TEENSY2)
+#   define MATRIX_ROW_PINS { D0, D1, D2, D3 }
+#   define MATRIX_COL_PINS { F6, F5, F4, B7, B6, B5, B4, B3, B2, B1, B0 }
+#   define UNUSED_PINS
+#endif
 
 /* COL2ROW or ROW2COL */
 #define DIODE_DIRECTION COL2ROW
@@ -49,7 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define BACKLIGHT_LEVELS 3
 
 /* Set 0 if debouncing isn't needed */
-#define DEBOUNCE    5
+#define DEBOUNCING_DELAY 5
 
 /* Mechanical locking support. Use KC_LCAP, KC_LNUM or KC_LSCR instead in keymap */
 #define LOCKING_SUPPORT_ENABLE

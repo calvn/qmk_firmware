@@ -1,7 +1,7 @@
 #include "ergodox_ez.h"
 #include "debug.h"
 #include "action_layer.h"
-#include "keymap_extras/keymap_neo2.h"
+#include "keymap_neo2.h"
 
 // Layer names
 #define BASE 0      // default layer
@@ -243,12 +243,12 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 
 
 // Runs just one time when the keyboard initializes.
-void * matrix_init_user(void) {
+void matrix_init_user(void) {
 };
 
 
 // Runs constantly in the background, in a loop.
-void * matrix_scan_user(void)
+void matrix_scan_user(void)
 {
     uint8_t layer = biton32(layer_state);
 

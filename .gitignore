@@ -1,8 +1,13 @@
+keyboard/planck/dfu-programmer.exe
 .dep
 *.o
 *.eep
 *.elf
-*.hex
+/*.hex
+/keyboard/**/*.hex
+/keyboard/**/keymaps/**/*.hex
+!/keyboard/**/keymaps/**/compiled.hex
+*.log
 *.lss
 *.lst
 *.map
@@ -11,5 +16,15 @@
 tags
 *~
 build/
+.build/
 *.bak
 .vagrant/
+.idea/
+CMakeLists.txt
+.DS_STORE
+
+# Eclipse/PyCharm/Other IDE Settings
+.cproject
+.project
+.settings/
+.idea
