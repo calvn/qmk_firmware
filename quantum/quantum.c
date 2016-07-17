@@ -15,6 +15,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return true;
 }
 
+void reset_keyboard(void) {
+  clear_keyboard();
+#ifdef AUDIO_ENABLE
+  stop_all_notes();
+  shutdown_user();
+#endif
+  wait_ms(250);
+#ifdef CATERINA_BOOTLOADER
+  *(uint16_t *)0x0800 = 0x7777; // these two are a-star-specific
+#endif
+  bootloader_jump();
+}
+
 // Shift / paren setup
 
 #ifndef LSPO_KEY
@@ -83,26 +96,67 @@ bool process_record_quantum(keyrecord_t *record) {
   switch(keycode) {
     case RESET:
       if (record->event.pressed) {
-        clear_keyboard();
-        #ifdef AUDIO_ENABLE
-          stop_all_notes();
-          shutdown_user();
-        #endif
-        wait_ms(250);
-        #ifdef ATREUS_ASTAR
-            *(uint16_t *)0x0800 = 0x7777; // these two are a-star-specific
-        #endif
-        bootloader_jump();
-        return false;
+        reset_keyboard();
       }
+	  return false;
       break;
     case DEBUG:
       if (record->event.pressed) {
           print("\nDEBUG: enabled.\n");
           debug_enable = true;
-          return false;
       }
+	  return false;
       break;
+	#ifdef RGBLIGHT_ENABLE
+	case RGB_TOG:
+		if (record->event.pressed) {
+			rgblight_toggle();
+      }
+	  return false;
+      break;
+	case RGB_MOD:
+		if (record->event.pressed) {
+			rgblight_step();
+      }
+	  return false;
+      break;
+	case RGB_HUI:
+		if (record->event.pressed) {
+			rgblight_increase_hue();
+      }
+	  return false;
+      break;
+	case RGB_HUD:
+		if (record->event.pressed) {
+			rgblight_decrease_hue();
+      }
+	  return false;
+      break;
+	case RGB_SAI:
+		if (record->event.pressed) {
+			rgblight_increase_sat();
+      }
+	  return false;
+      break;
+	case RGB_SAD:
+		if (record->event.pressed) {
+			rgblight_decrease_sat();
+      }
+	  return false;
+      break;
+	case RGB_VAI:
+		if (record->event.pressed) {
+			rgblight_increase_val();
+      }
+	  return false;
+      break;
+	case RGB_VAD:
+		if (record->event.pressed) {
+			rgblight_decrease_val();
+      }
+	  return false;
+      break;
+	#endif
     case MAGIC_SWAP_CONTROL_CAPSLOCK ... MAGIC_UNSWAP_ALT_GUI:
       if (record->event.pressed) {
         // MAGIC actions (BOOTMAGIC without the boot)
@@ -162,6 +216,12 @@ bool process_record_quantum(keyrecord_t *record) {
         register_mods(MOD_BIT(KC_LSFT));
       }
       else {
+        #ifdef DISABLE_SPACE_CADET_ROLLOVER
+          if (get_mods() & MOD_BIT(KC_RSFT)) {
+            shift_interrupted[0] = true;
+            shift_interrupted[1] = true;
+          }
+        #endif
         if (!shift_interrupted[0]) {
           register_code(LSPO_KEY);
           unregister_code(LSPO_KEY);
@@ -178,6 +238,12 @@ bool process_record_quantum(keyrecord_t *record) {
         register_mods(MOD_BIT(KC_RSFT));
       }
       else {
+        #ifdef DISABLE_SPACE_CADET_ROLLOVER
+          if (get_mods() & MOD_BIT(KC_LSFT)) {
+            shift_interrupted[0] = true;
+            shift_interrupted[1] = true;
+          }
+        #endif
         if (!shift_interrupted[1]) {
           register_code(RSPC_KEY);
           unregister_code(RSPC_KEY);
