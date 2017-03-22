@@ -13,7 +13,7 @@ extern keymap_config_t keymap_config;
 // entirely and just use numbers.
 #define _QWERTY 0
 #define _NUMPAD 1
-// #define _DVORAK 2
+#define _LOL 2
 #define _LOWER 3
 #define _RAISE 4
 #define _ADJUST 16
@@ -21,7 +21,7 @@ extern keymap_config_t keymap_config;
 // Macro name shortcuts
 #define QWERTY M(_QWERTY)
 #define NUMPAD M(_NUMPAD)
-// #define DVORAK M(_DVORAK)
+#define LOL M(_LOL)
 #define LOWER M(_LOWER)
 #define RAISE M(_RAISE)
 #define M_BL 5
@@ -65,7 +65,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   {_______, _______, _______, _______, _______, _______, _______,    KC_7,    KC_8,    KC_9, KC_MINS, KC_BSPC},
   {_______, _______, _______, _______, _______, _______, _______,    KC_4,    KC_5,    KC_6, KC_PLUS,  KC_TAB},
   {_______, _______, _______, _______, _______, _______, _______,    KC_1,    KC_2,    KC_3, KC_SLSH,  KC_ENT},
-  {_______, _______, _______, _______,   LOWER,   KC_SPC,  KC_SPC,  RAISE,    KC_0,  KC_DOT, KC_ASTR,  KC_COMM}
+  {_______, _______, _______, _______,   LOWER,   KC_SPC,  KC_SPC,  RAISE,    KC_0,  KC_DOT, KC_ASTR, KC_COMM}
+},
+
+ /* LOL
+  * ,-----------------------------------------------------------------------------------.
+  * | Esc  |   1  |   2  |   3  |   4  |   5  |   6  |      |      |      |      | Bksp |
+  * |------+------+------+------+------+-------------+------+------+------+------+------|
+  * | Tab  |   Q  |   W  |   E  |   R  |   T  |   Y  |      |      |      |      |      |
+  * |------+------+------+------+------+------|------+------+------+------+------+------|
+  * | Shift|   A  |   S  |   D  |   F  |   G  |   H  |      |      |      |      |Enter |
+  * |------+------+------+------+------+------+------+------+------+------+------+------|
+  * |      | Ctrl | Alt  | GUI  |Lower |    Space    |Raise |      |      |      |      |
+  * `-----------------------------------------------------------------------------------'
+  */
+[_LOL] = {
+  {KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    _______, _______, _______, _______, KC_BSPC},
+  {KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    _______, _______, _______, _______, _______},
+  {KC_LSFT, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    _______, _______, _______, _______,  KC_ENT},
+  {_______, KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   _______, _______, _______, _______}
 },
 
 /* Lower
@@ -108,7 +126,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * | Power| Reset|      |      |      |      |      |      |      |      |      |  Del |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
- * |      |      |      |Aud on|Audoff|AGnorm|AGswap|Qwerty|Numpad|      |      |      |
+ * |      |      |      |Aud on|Audoff|AGnorm|AGswap|Qwerty|Numpad| LOL  |      |      |
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * |      |Voice-|Voice+|Mus on|Musoff|      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -117,7 +135,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_ADJUST] = {
   {KC_POWER, RESET,   _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_DEL},
-  {_______,  _______, _______, AU_ON,   AU_OFF,  AG_NORM, AG_SWAP,  QWERTY,  NUMPAD, _______, _______, _______},
+  {_______,  _______, _______, AU_ON,   AU_OFF,  AG_NORM, AG_SWAP,  QWERTY,  NUMPAD,     LOL, _______, _______},
   {_______,  MUV_DE,  MUV_IN,  MU_ON,   MU_OFF,  MI_ON,   MI_OFF,  _______, _______, _______, _______, _______},
   {_______,  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______}
 }
@@ -145,6 +163,11 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
         case _NUMPAD:
           if (record->event.pressed) {
             persistent_default_layer_set(1UL<<_NUMPAD);
+          }
+          break;
+        case _LOL:
+          if (record->event.pressed) {
+            persistent_default_layer_set(1UL<<_LOL);
           }
           break;
         case _LOWER:
